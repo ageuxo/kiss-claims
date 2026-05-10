@@ -19,6 +19,7 @@ java {
 
 dependencies {
     implementation(libs.slf4j)
+    implementation(libs.jtoml)
 
     implementation(libs.jdbi.core)
     implementation(libs.jdbi.sqlobject)
