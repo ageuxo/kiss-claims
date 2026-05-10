@@ -6,6 +6,7 @@ fabric-api = "0.148.0+26.1.2"
 slf4j = "2.0.17"
 jdbi = "3.53.0"
 jtoml = "1.5.2"
+jspecify = "1.0.0"
 
 [plugins]
 fabric-loom = { id = "net.fabricmc.fabric-loom", version.ref = "fabric-loom" }
@@ -18,3 +19,4 @@ jdbi-core = { module = "org.jdbi:jdbi3-core", version.ref = "jdbi" }
 jdbi-sqlobject = { module = "org.jdbi:jdbi3-sqlobject", version.ref = "jdbi" }
 jdbi-mysql = { module = "org.jdbi:jdbi3-mysql", version.ref = "jdbi" }
 jtoml = { module = "io.github.wasabithumb:jtoml-configurate", version.ref = "jtoml" }
+jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
