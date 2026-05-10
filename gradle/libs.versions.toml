@@ -4,6 +4,7 @@ fabric-loader = "0.19.2"
 fabric-loom = "1.16-SNAPSHOT"
 fabric-api = "0.148.0+26.1.2"
 slf4j = "2.0.17"
+jdbi = "3.53.0"
 
 [plugins]
 fabric-loom = { id = "net.fabricmc.fabric-loom", version.ref = "fabric-loom" }
@@ -12,3 +13,6 @@ fabric-loom = { id = "net.fabricmc.fabric-loom", version.ref = "fabric-loom" }
 fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
 fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric-api" }
 slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+jdbi-core = { module = "org.jdbi:jdbi3-core", version.ref = "jdbi" }
+jdbi-sqlobject = { module = "org.jdbi:jdbi3-sqlobject", version.ref = "jdbi" }
+jdbi-mysql = { module = "org.jdbi:jdbi3-mysql", version.ref = "jdbi" }

@@ -25,8 +25,6 @@ dependencies {
 	implementation("net.fabricmc:fabric-loader:${libs.versions.fabric.loader.get()}")
 	implementation("net.fabricmc.fabric-api:fabric-api:${libs.versions.fabric.api.get()}")
 
-	implementation(libs.slf4j)
-
 	project(":core")
 }
 
