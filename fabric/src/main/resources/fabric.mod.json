@@ -1,0 +1,31 @@
+{
+	"schemaVersion": 1,
+	"id": "kiss-claims",
+	"version": "${version}",
+	"name": "KISS-Claims",
+	"description": "Claims kept simple",
+	"authors": [
+		"Ageuxo"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "LGPL",
+	"icon": "assets/kiss-claims/icon.png",
+	"environment": "server",
+	"entrypoints": {
+		"main": [
+          "org.ageuxo.kiss.claims.fabric.KISSClaims"
+		]
+	},
+	"mixins": [
+		"kiss-claims.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.19.2",
+		"minecraft": "~26.1.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
