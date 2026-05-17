@@ -7,6 +7,7 @@ slf4j = "2.0.17"
 jdbi = "3.53.0"
 jtoml = "1.5.2"
 jspecify = "1.0.0"
+junit = "6.0.3"
 
 [plugins]
 fabric-loom = { id = "net.fabricmc.fabric-loom", version.ref = "fabric-loom" }
@@ -20,3 +21,8 @@ jdbi-sqlobject = { module = "org.jdbi:jdbi3-sqlobject", version.ref = "jdbi" }
 jdbi-mysql = { module = "org.jdbi:jdbi3-mysql", version.ref = "jdbi" }
 jtoml = { module = "io.github.wasabithumb:jtoml-configurate", version.ref = "jtoml" }
 jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
+junit-platform = { module = "org.junit.platform:junit-platform-suite", version.ref = "junit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+
+[bundles]
+junit = ["junit-platform", "junit-jupiter"]

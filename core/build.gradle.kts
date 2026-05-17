@@ -10,6 +10,10 @@ tasks.withType<JavaCompile>().configureEach {
     options.release = 25
 }
 
+tasks.test {
+    useJUnitPlatform()
+}
+
 java {
     withSourcesJar()
 
@@ -25,4 +29,6 @@ dependencies {
     implementation(libs.jdbi.core)
     implementation(libs.jdbi.sqlobject)
     implementation(libs.jdbi.mysql)
+
+    testImplementation(libs.bundles.junit)
 }
