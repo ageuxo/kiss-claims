@@ -25,6 +25,7 @@ dependencies {
     implementation(libs.slf4j)
     implementation(libs.jtoml)
     implementation(libs.jspecify)
+    implementation(libs.mariadb.connector)
 
     implementation(libs.jdbi.core)
     implementation(libs.jdbi.sqlobject)

@@ -5,6 +5,7 @@ fabric-loom = "1.16-SNAPSHOT"
 fabric-api = "0.148.0+26.1.2"
 slf4j = "2.0.17"
 jdbi = "3.53.0"
+mariadb = "3.5.8"
 jtoml = "1.5.2"
 jspecify = "1.0.0"
 junit = "6.0.3"
@@ -19,6 +20,7 @@ slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 jdbi-core = { module = "org.jdbi:jdbi3-core", version.ref = "jdbi" }
 jdbi-sqlobject = { module = "org.jdbi:jdbi3-sqlobject", version.ref = "jdbi" }
 jdbi-mysql = { module = "org.jdbi:jdbi3-mysql", version.ref = "jdbi" }
+mariadb-connector = { module = "org.mariadb.jdbc:mariadb-java-client", version.ref = "mariadb" }
 jtoml = { module = "io.github.wasabithumb:jtoml-configurate", version.ref = "jtoml" }
 jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
 junit-platform = { module = "org.junit.platform:junit-platform-suite", version.ref = "junit" }
