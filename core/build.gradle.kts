@@ -31,5 +31,6 @@ dependencies {
     implementation(libs.jdbi.sqlobject)
     implementation(libs.jdbi.mysql)
 
+    testRuntimeOnly(libs.bundles.log4j)
     testImplementation(libs.bundles.junit)
 }
