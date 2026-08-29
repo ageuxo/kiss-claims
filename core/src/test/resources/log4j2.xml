@@ -15,5 +15,8 @@
         <Logger name="org.ageuxo.kiss" level="DEBUG">
             <AppenderRef ref="CONSOLE" level="DEBUG" />
         </Logger>
+        <Logger name="org.jdbi.sql" level="WARN">
+            <AppenderRef ref="CONSOLE" level="WARN" />
+        </Logger>
     </Loggers>
 </Configuration>
