@@ -1,6 +1,7 @@
 package org.ageuxo.kiss.claims.core.db;
 
 import org.ageuxo.kiss.claims.core.config.CoreConfig;
+import org.ageuxo.kiss.claims.core.db.mapper.ClaimMapper;
 import org.ageuxo.kiss.claims.core.db.mapper.GroupMapper;
 import org.ageuxo.kiss.claims.core.db.mapper.UserMapper;
 import org.jdbi.v3.core.HandleCallback;
@@ -9,7 +10,6 @@ import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.Slf4JSqlLogger;
 import org.jdbi.v3.mysql.MysqlPlugin;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
-import org.slf4j.event.Level;
 
 public class Database {
 
@@ -25,6 +25,7 @@ public class Database {
                 .installPlugin(new SqlObjectPlugin())
                 .registerRowMapper(new UserMapper())
                 .registerRowMapper(new GroupMapper())
+                .registerRowMapper(new ClaimMapper())
                 .setSqlLogger(new Slf4JSqlLogger());
     }
 
