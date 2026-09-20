@@ -1,5 +1,7 @@
 package org.ageuxo.kiss.claims.core.db.table;
 
+import org.ageuxo.kiss.claims.core.Result;
+import org.ageuxo.kiss.claims.core.db.exception.DuplicateKeyException;
 import org.ageuxo.kiss.claims.core.db.schemas.User;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindMethods;
@@ -45,6 +47,22 @@ public interface UsersDAO {
                 .filter(user -> updateName(user, name))
                 .isPresent();
 
+    }
+
+    default Result<User> makeUser(UUID uuid, String name) {
+        try {
+            int userId = createUser(uuid, name);
+            Optional<User> user = findUser(userId);
+            if (user.isPresent()) {
+                return Result.success(user.get());
+            }
+        } catch (DuplicateKeyException e) {
+            return Result.informative(e, "Duplicate user data: %s".formatted(e.key()));
+        } catch (SQLException e) {
+            return Result.error(e);
+        }
+
+        throw new Error("An unexpected error occurred while creating user.");
     }
 
 }
