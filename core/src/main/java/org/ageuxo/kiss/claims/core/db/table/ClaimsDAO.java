@@ -1,10 +1,14 @@
 package org.ageuxo.kiss.claims.core.db.table;
 
+import org.ageuxo.kiss.claims.core.Result;
+import org.ageuxo.kiss.claims.core.db.exception.DuplicateKeyException;
+import org.ageuxo.kiss.claims.core.db.exception.ForeignConstraintException;
 import org.ageuxo.kiss.claims.core.db.schemas.Claim;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +21,24 @@ public interface ClaimsDAO {
     List<Claim> list();
 
     @SqlUpdate("INSERT INTO `claims` (group_id, x, y, created_by) VALUES (:group_id, :x, :y, :created_by)")
-    int createClaim(@Bind("group_id") int group_id, @Bind("x") int chunkX, @Bind("y") int chunkY, @Bind("created_by") int createdById);
+    int createClaim(@Bind("group_id") int group_id, @Bind("x") int chunkX, @Bind("y") int chunkY, @Bind("created_by") int createdById) throws SQLException;
+    
+    default Result<Claim> makeClaim(int groupId, int x, int y, int claimedById) {
+        try {
+            int claimId = createClaim(groupId, x, y, claimedById);
+            Optional<Claim> claim = findClaim(claimId);
+            if (claim.isPresent()) {
+                return Result.success(claim.get());
+            }
+        } catch (DuplicateKeyException e) {
+            return Result.informative(e, "Duplicate claim data: %s".formatted(e.key()));
+        } catch (ForeignConstraintException e) {
+            return Result.informative(e, "Invalid foreign value: %s".formatted(e.key()));
+        } catch (SQLException e) {
+            return Result.error(e);
+        }
+
+        throw new Error("An unexpected error occurred while claiming.");
+    }
 
 }
