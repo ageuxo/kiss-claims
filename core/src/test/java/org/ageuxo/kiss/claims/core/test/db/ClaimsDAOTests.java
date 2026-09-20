@@ -1,5 +1,6 @@
 package org.ageuxo.kiss.claims.core.test.db;
 
+import org.ageuxo.kiss.claims.core.Result;
 import org.ageuxo.kiss.claims.core.db.Database;
 import org.ageuxo.kiss.claims.core.db.schemas.Claim;
 import org.ageuxo.kiss.claims.core.db.schemas.Group;
@@ -34,25 +35,26 @@ public class ClaimsDAOTests {
         User user = UsersDAOTests.makeTestUser(usersDAO, UUID.randomUUID(), "ClaimUser");
         Group group = GroupsDAOTests.makeTestGroup(groupsDao, "ClaimGroup", user.id());
 
-        int returnedId = dao.createClaim(group.id(), 0, 0, user.id());
-        assertTrue(
-                returnedId >= 0,
-                "Returned ID not greater than zero."
-        );
-
-        Optional<Claim> claimOptional = dao.findClaim(returnedId);
-        assertTrue(
-                claimOptional.isPresent(),
-                "Could not find claim by ID"
-        );
-
-        claimMatches(claimOptional.get(), returnedId, user.id(), group.id());
+        makeTestClaim(dao, group.id(), 0, 0, user.id());
     }
 
-    private static void claimMatches(Claim claim, int expectedId, int expectedUser, int expectedGroup) {
-        assertEquals(expectedId, claim.id());
+    public static Claim makeTestClaim(ClaimsDAO dao, int groupId, int x, int y, int claimedById) throws AssertionError {
+        Result<Claim> claimResult = dao.makeClaim(groupId, x, y, claimedById);
+
+        if (claimResult instanceof Result.Success<Claim>(Claim result)) {
+            assertClaimMatches(result, groupId, x, y, claimedById);
+            return result;
+        }
+
+        Optional<Throwable> cause = claimResult.getCause();
+        throw new AssertionError("Failed making new claim.", cause.orElse(null));
+    }
+
+    private static void assertClaimMatches(Claim claim, int expectedGroup, int expectedX, int expectedY, int expectedCreator) {
         assertEquals(expectedGroup, claim.groupId());
-        assertEquals(expectedUser, claim.createdById());
+        assertEquals(expectedX, claim.chunkX());
+        assertEquals(expectedY, claim.chunkY());
+        assertEquals(expectedCreator, claim.createdById());
     }
 
 }
