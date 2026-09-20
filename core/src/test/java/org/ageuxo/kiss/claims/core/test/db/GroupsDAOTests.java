@@ -1,5 +1,6 @@
 package org.ageuxo.kiss.claims.core.test.db;
 
+import org.ageuxo.kiss.claims.core.Result;
 import org.ageuxo.kiss.claims.core.db.Database;
 import org.ageuxo.kiss.claims.core.db.schemas.Group;
 import org.ageuxo.kiss.claims.core.db.schemas.User;
@@ -31,19 +32,11 @@ public class GroupsDAOTests {
 
         User user = UsersDAOTests.makeTestUser(usersDAO, UUID.randomUUID(), "TestUser");
 
-        int returnedId = dao.createGroup("TestGroup", user.id());
-        assertTrue(
-                returnedId >= 0,
-                "Returned ID not greater than zero."
+        makeTestGroup(
+                dao,
+                "TestGroup",
+                user.id()
         );
-
-        // Get user from table by id
-        Optional<Group> groupOptional = dao.findGroup(returnedId);
-        assertTrue(
-                groupOptional.isPresent(),
-                "Could not find group by ID."
-        );
-
     }
 
     @Test
@@ -56,29 +49,42 @@ public class GroupsDAOTests {
 
         var user = UsersDAOTests.makeTestUser(usersDAO, UUID.randomUUID(), "GroupUser");
 
-        int returnedId = dao.createGroup(nameA, user.id());
-        assertTrue(
-                returnedId >= 0,
-                "Returned ID not greater than zero."
-        );
+        var group = makeTestGroup(dao, nameA, user.id());
 
         // Rename group to "NameB"
         assertTrue(
-                dao.changeName(returnedId, nameB)
+                dao.changeName(group.id(), nameB)
         );
 
         // Get group from table by id
-        Optional<Group> groupOptional = dao.findGroup(returnedId);
+        Optional<Group> groupOptional = dao.findGroup(group.id());
         assertTrue(
                 groupOptional.isPresent(),
                 "Could not find group by ID."
         );
 
-        groupMatches(groupOptional.get(), returnedId, nameB);
+        assertGroupMatches(groupOptional.get(), group.id(), nameB);
+    }
+
+    public static Group makeTestGroup(GroupsDAO dao, String name, int ownerId) {
+        Result<Group> groupResult = dao.makeGroup(name, ownerId);
+
+        if (groupResult instanceof Result.Success<Group>(Group result)) {
+            assertGroupNameMatches(result, name);
+            return result;
+        }
+
+        Optional<Throwable> cause = groupResult.getCause();
+        throw new AssertionError("Failed making new group.", cause.orElse(null));
+    }
+
+    private static void assertGroupNameMatches(Group group, String expectedName) {
+        assertEquals(expectedName, group.name(), "Names are not equal!");
+
     }
 
     /// Assert group fields match expected values.
-    private static void groupMatches(Group group, int expectedId, String expectedName) {
+    private static void assertGroupMatches(Group group, int expectedId, String expectedName) {
         assertEquals(expectedId, group.id(), "Ids are not equal!");
         assertEquals(expectedName, group.name(), "Names are not equal!");
     }
