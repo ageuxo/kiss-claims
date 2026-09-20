@@ -1,6 +1,7 @@
 package org.ageuxo.kiss.claims.core.db;
 
 import org.ageuxo.kiss.claims.core.config.CoreConfig;
+import org.ageuxo.kiss.claims.core.db.exception.IntegrityExceptionHandler;
 import org.ageuxo.kiss.claims.core.db.mapper.ClaimMapper;
 import org.ageuxo.kiss.claims.core.db.mapper.GroupMapper;
 import org.ageuxo.kiss.claims.core.db.mapper.UserMapper;
@@ -8,6 +9,7 @@ import org.jdbi.v3.core.HandleCallback;
 import org.jdbi.v3.core.HandleConsumer;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.Slf4JSqlLogger;
+import org.jdbi.v3.core.statement.SqlStatements;
 import org.jdbi.v3.mysql.MysqlPlugin;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
@@ -27,6 +29,9 @@ public class Database {
                 .registerRowMapper(new GroupMapper())
                 .registerRowMapper(new ClaimMapper())
                 .setSqlLogger(new Slf4JSqlLogger());
+
+        this.jdbi.getConfig(SqlStatements.class)
+                .addExceptionHandler(new IntegrityExceptionHandler());
     }
 
     public <T, X extends Exception> T withHandle(HandleCallback<T, X> consumer) throws X {
