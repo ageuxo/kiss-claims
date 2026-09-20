@@ -1,5 +1,6 @@
 package org.ageuxo.kiss.claims.core.test.db;
 
+import org.ageuxo.kiss.claims.core.Result;
 import org.ageuxo.kiss.claims.core.db.Database;
 import org.ageuxo.kiss.claims.core.db.schemas.User;
 import org.ageuxo.kiss.claims.core.db.table.UsersDAO;
@@ -8,7 +9,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -25,24 +25,24 @@ public class UsersDAOTests {
 
     @Test
     void addUser() {
+        makeTestUser(
+                jdbi.onDemand(UsersDAO.class),
+                UUID.randomUUID(),
+                "TestName"
+        );
+    }
+
+    @Test
+    void addDuplicateUsername() {
         UsersDAO dao = jdbi.onDemand(UsersDAO.class);
 
-        UUID testUuid = UUID.randomUUID();
-        String testName = "TestName";
-        int returnedId = dao.createUser(testUuid, testName);
-        LoggerFactory.getLogger(this.getClass()).debug("Returned id: {}", returnedId);
-        assertTrue(
-                returnedId >= 0,
-                "Returned ID not greater than zero."
-        );
+        String name = "Duplicate";
+        // Make first user
+        makeTestUser(dao, UUID.randomUUID(), name);
 
-        // Get user from table by id
-        Optional<User> userOptional = dao.findUser(returnedId);
-        assertTrue(
-                userOptional.isPresent(),
-                "Could not find user by ID."
-        );
-        userMatches(userOptional.get(), returnedId, testName, testUuid);
+        // Make second user
+        assertThrows(AssertionError.class,  () -> makeTestUser(dao, UUID.randomUUID(), name));
+
     }
 
     @Test
@@ -54,27 +54,38 @@ public class UsersDAOTests {
         String nameB = "NameB";
 
         // Create user with name "NameA"
-        int returnedId = dao.createUser(uuid, nameA);
+        var user = makeTestUser(dao, uuid, nameA);
 
         // Rename user to "NameB"
         assertTrue(
-                dao.changeName(returnedId, nameB),
+                dao.changeName(user.id(), nameB),
                 "Name change failed"
         );
 
         // Get user from table by id
-        Optional<User> userOptional = dao.findUser(returnedId);
+        Optional<User> userOptional = dao.findUser(user.id());
         assertTrue(
                 userOptional.isPresent(),
                 "Could not find user by ID."
         );
 
-        userMatches(userOptional.get(), returnedId, nameB, uuid);
+        assertUserMatches(userOptional.get(), nameB, uuid);
+    }
+
+    public static User makeTestUser(UsersDAO dao, UUID uuid, String name) throws AssertionError {
+        Result<User> userResult = dao.makeUser(uuid, name);
+
+        if (userResult instanceof Result.Success<User>(User result)) {
+            assertUserMatches(result, name, uuid);
+            return result;
+        }
+
+        Optional<Throwable> cause = userResult.getCause();
+        throw new AssertionError("Failed making new user.", cause.orElse(null));
     }
 
     /// Assert user fields match expected values.
-    private static void userMatches(User user, int expectedId, String expectedName, UUID expectedUUID) {
-        assertEquals(expectedId, user.id(), "Ids are not equal!");
+    private static void assertUserMatches(User user, String expectedName, UUID expectedUUID) {
         assertEquals(expectedName, user.name(), "Names are not equal!");
         assertEquals(expectedUUID, user.uuid(), "UUIDs are not equal!");
     }

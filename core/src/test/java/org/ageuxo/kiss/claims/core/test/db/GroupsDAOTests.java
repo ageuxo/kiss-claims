@@ -2,6 +2,7 @@ package org.ageuxo.kiss.claims.core.test.db;
 
 import org.ageuxo.kiss.claims.core.db.Database;
 import org.ageuxo.kiss.claims.core.db.schemas.Group;
+import org.ageuxo.kiss.claims.core.db.schemas.User;
 import org.ageuxo.kiss.claims.core.db.table.GroupsDAO;
 import org.ageuxo.kiss.claims.core.db.table.UsersDAO;
 import org.jdbi.v3.core.Jdbi;
@@ -28,9 +29,9 @@ public class GroupsDAOTests {
         GroupsDAO dao = jdbi.onDemand(GroupsDAO.class);
         UsersDAO usersDAO = jdbi.onDemand(UsersDAO.class);
 
-        int userId = usersDAO.createUser(UUID.randomUUID(), "TestUser");
+        User user = UsersDAOTests.makeTestUser(usersDAO, UUID.randomUUID(), "TestUser");
 
-        int returnedId = dao.createGroup("TestGroup", userId);
+        int returnedId = dao.createGroup("TestGroup", user.id());
         assertTrue(
                 returnedId >= 0,
                 "Returned ID not greater than zero."
@@ -53,9 +54,9 @@ public class GroupsDAOTests {
         String nameA = "NameA";
         String nameB = "NameB";
 
-        int userId = usersDAO.createUser(UUID.randomUUID(), "GroupUser");
+        var user = UsersDAOTests.makeTestUser(usersDAO, UUID.randomUUID(), "GroupUser");
 
-        int returnedId = dao.createGroup(nameA, userId);
+        int returnedId = dao.createGroup(nameA, user.id());
         assertTrue(
                 returnedId >= 0,
                 "Returned ID not greater than zero."

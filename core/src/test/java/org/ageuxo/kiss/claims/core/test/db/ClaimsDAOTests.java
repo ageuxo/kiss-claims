@@ -2,6 +2,7 @@ package org.ageuxo.kiss.claims.core.test.db;
 
 import org.ageuxo.kiss.claims.core.db.Database;
 import org.ageuxo.kiss.claims.core.db.schemas.Claim;
+import org.ageuxo.kiss.claims.core.db.schemas.User;
 import org.ageuxo.kiss.claims.core.db.table.ClaimsDAO;
 import org.ageuxo.kiss.claims.core.db.table.GroupsDAO;
 import org.ageuxo.kiss.claims.core.db.table.UsersDAO;
@@ -29,10 +30,10 @@ public class ClaimsDAOTests {
         UsersDAO usersDAO = jdbi.onDemand(UsersDAO.class);
         GroupsDAO groupsDao = jdbi.onDemand(GroupsDAO.class);
 
-        int userId = usersDAO.createUser(UUID.randomUUID(), "ClaimUser");
-        int groupId = groupsDao.createGroup("ClaimGroup", userId);
+        User user = UsersDAOTests.makeTestUser(usersDAO, UUID.randomUUID(), "ClaimUser");
+        int groupId = groupsDao.createGroup("ClaimGroup", user.id());
 
-        int returnedId = dao.createClaim(groupId, 0, 0, userId);
+        int returnedId = dao.createClaim(groupId, 0, 0, user.id());
         assertTrue(
                 returnedId >= 0,
                 "Returned ID not greater than zero."
@@ -44,7 +45,7 @@ public class ClaimsDAOTests {
                 "Could not find claim by ID"
         );
 
-        claimMatches(claimOptional.get(), returnedId, userId, groupId);
+        claimMatches(claimOptional.get(), returnedId, user.id(), groupId);
     }
 
     private static void claimMatches(Claim claim, int expectedId, int expectedUser, int expectedGroup) {
