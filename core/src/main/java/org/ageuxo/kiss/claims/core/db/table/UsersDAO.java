@@ -7,6 +7,7 @@ import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,11 +27,11 @@ public interface UsersDAO {
     List<User> list();
 
     @SqlUpdate("INSERT INTO `users` (id, uuid, name) VALUES (:id, :uuid, :name)")
-    boolean insertUser(@BindMethods User user);
+    boolean insertUser(@BindMethods User user) throws SQLException;
 
     @SqlUpdate("INSERT INTO `users` (uuid, name) VALUES (:uuid, :name)")
     @GetGeneratedKeys("id")
-    int createUser(@Bind("uuid") UUID uuid, @Bind("name") String name);
+    int createUser(@Bind("uuid") UUID uuid, @Bind("name") String name) throws SQLException;
 
     @SqlUpdate("UPDATE `users` SET name = :name WHERE id = :id")
     boolean updateName(@BindMethods User user, @Bind("name") String name);
