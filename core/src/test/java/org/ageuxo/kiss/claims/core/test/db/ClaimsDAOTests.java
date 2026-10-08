@@ -38,6 +38,33 @@ public class ClaimsDAOTests {
         makeTestClaim(dao, group.id(), 0, 0, 0, user.id());
     }
 
+    @Test
+    void removeClaim() {
+        ClaimsDAO claimsDAO = jdbi.onDemand(ClaimsDAO.class);
+        UsersDAO usersDAO = jdbi.onDemand(UsersDAO.class);
+        GroupsDAO groupsDao = jdbi.onDemand(GroupsDAO.class);
+
+        User user = UsersDAOTests.makeTestUser(usersDAO, UUID.randomUUID(), "ClaimRemoveUser");
+        Group group = GroupsDAOTests.makeTestGroup(groupsDao, "ClaimRemoveGroup", user.id());
+
+        Claim claim = makeTestClaim(claimsDAO, group.id(), 1, 2, 3, user.id());
+
+        Result<Boolean> removeResult = claimsDAO.removeClaim(claim.id());
+        if (removeResult instanceof Result.Success<Boolean>(Boolean result)) {
+            assertTrue(result);
+        } else {
+            throw new AssertionError("Failed removing claim.", removeResult.getCause().orElse(null));
+        }
+
+        // Make sure claim is missing
+        assertTrue(
+                claimsDAO.findClaim(claim.id()).isEmpty(),
+                "Claim still exists."
+        );
+
+
+    }
+
     public static Claim makeTestClaim(ClaimsDAO dao, int groupId, int x, int y, int z, int claimedById) throws AssertionError {
         Result<Claim> claimResult = dao.makeClaim(groupId, x, y, z, claimedById);
 

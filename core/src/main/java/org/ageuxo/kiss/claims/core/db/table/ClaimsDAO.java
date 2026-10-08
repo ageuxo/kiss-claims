@@ -22,7 +22,10 @@ public interface ClaimsDAO {
 
     @SqlUpdate("INSERT INTO `claims` (group_id, x, y, z, created_by) VALUES (:group_id, :x, :y, :z, :created_by)")
     int createClaim(@Bind("group_id") int group_id, @Bind("x") int chunkX, @Bind("y") int chunkY, @Bind("z") int chunkZ, @Bind("created_by") int createdById) throws SQLException;
-    
+
+    @SqlUpdate("DELETE FROM `claims` WHERE id = :id")
+    boolean deleteClaim(@Bind("id") int id) throws SQLException;
+
     default Result<Claim> makeClaim(int groupId, int x, int y, int z, int claimedById) {
         try {
             int claimId = createClaim(groupId, x, y, z, claimedById);
@@ -39,6 +42,14 @@ public interface ClaimsDAO {
         }
 
         throw new Error("An unexpected error occurred while claiming.");
+    }
+
+    default Result<Boolean> removeClaim(int id) {
+        try {
+            return Result.success(deleteClaim(id));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
