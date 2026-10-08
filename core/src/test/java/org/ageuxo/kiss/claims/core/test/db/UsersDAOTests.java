@@ -33,6 +33,31 @@ public class UsersDAOTests {
     }
 
     @Test
+    void removeUser() {
+        UsersDAO usersDAO = jdbi.onDemand(UsersDAO.class);
+
+        User user = makeTestUser(
+                usersDAO,
+                UUID.randomUUID(),
+                "RemoveTestUser"
+        );
+
+        Result<Boolean> removeResult = usersDAO.removeUser(user.id());
+
+        if (removeResult instanceof Result.Success<Boolean>(Boolean result)) {
+            assertTrue(result);
+        } else {
+            throw new AssertionError("Failed removing user.", removeResult.getCause().orElse(null));
+        }
+
+        // Make sure user is missing
+        assertTrue(
+                usersDAO.findUser(user.id()).isEmpty(),
+                "User still exists."
+        );
+    }
+
+    @Test
     void addDuplicateUsername() {
         UsersDAO dao = jdbi.onDemand(UsersDAO.class);
 

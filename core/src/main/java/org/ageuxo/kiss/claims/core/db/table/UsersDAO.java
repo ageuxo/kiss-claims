@@ -35,6 +35,9 @@ public interface UsersDAO {
     @GetGeneratedKeys("id")
     int createUser(@Bind("uuid") UUID uuid, @Bind("name") String name) throws SQLException;
 
+    @SqlUpdate("DELETE FROM `users` WHERE id = :id")
+    boolean deleteUser(@Bind("id") int id) throws SQLException;
+
     @SqlUpdate("UPDATE `users` SET name = :name WHERE id = :id")
     boolean updateName(@BindMethods User user, @Bind("name") String name);
 
@@ -63,6 +66,14 @@ public interface UsersDAO {
         }
 
         throw new Error("An unexpected error occurred while creating user.");
+    }
+
+    default Result<Boolean> removeUser(int id) {
+        try {
+            return Result.success(deleteUser(id));
+        } catch (SQLException e) {
+            return Result.error(e);
+        }
     }
 
 }
