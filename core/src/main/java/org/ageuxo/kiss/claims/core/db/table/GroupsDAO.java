@@ -31,6 +31,9 @@ public interface GroupsDAO {
     @GetGeneratedKeys("id")
     int createGroup(@Bind("name") String name, @Bind("id") int creatorId) throws SQLException;
 
+    @SqlUpdate("DELETE FROM `groups` WHERE id = :id")
+    boolean deleteGroup(@Bind("id")int id) throws SQLException;
+
     @SqlUpdate("UPDATE `groups` SET name = :name WHERE id = :id")
     boolean updateName(@BindMethods Group group, @Bind("name") String name);
 
@@ -56,6 +59,14 @@ public interface GroupsDAO {
         }
 
         throw new Error("An unexpected error occurred while creating group.");
+    }
+
+    default Result<Boolean> removeGroup(int id) {
+        try {
+            return Result.success(deleteGroup(id));
+        } catch (SQLException e) {
+            return Result.error(e);
+        }
     }
 
 }

@@ -40,6 +40,35 @@ public class GroupsDAOTests {
     }
 
     @Test
+    void removeGroup() {
+        GroupsDAO groupsDAO = jdbi.onDemand(GroupsDAO.class);
+        UsersDAO usersDAO = jdbi.onDemand(UsersDAO.class);
+
+        User user = UsersDAOTests.makeTestUser(usersDAO, UUID.randomUUID(), "RemoveGroupUser");
+
+        Group group = makeTestGroup(
+                groupsDAO,
+                "RemoveTestGroup",
+                user.id()
+        );
+
+        Result<Boolean> removeResult = groupsDAO.removeGroup(group.id());
+
+        if (removeResult instanceof Result.Success<Boolean>(Boolean result)) {
+            assertTrue(result);
+        } else {
+            throw new AssertionError("Failed removing group.", removeResult.getCause().orElse(null));
+        }
+
+        // Make sure group is missing
+        assertTrue(
+                groupsDAO.findGroup(group.id()).isEmpty(),
+                "Group still exists."
+        );
+
+    }
+
+    @Test
     void nameChange() {
         GroupsDAO dao = jdbi.onDemand(GroupsDAO.class);
         UsersDAO usersDAO = jdbi.onDemand(UsersDAO.class);
