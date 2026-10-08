@@ -20,12 +20,12 @@ public interface ClaimsDAO {
     @SqlQuery("SELECT * FROM `claims`")
     List<Claim> list();
 
-    @SqlUpdate("INSERT INTO `claims` (group_id, x, y, created_by) VALUES (:group_id, :x, :y, :created_by)")
-    int createClaim(@Bind("group_id") int group_id, @Bind("x") int chunkX, @Bind("y") int chunkY, @Bind("created_by") int createdById) throws SQLException;
+    @SqlUpdate("INSERT INTO `claims` (group_id, x, y, z, created_by) VALUES (:group_id, :x, :y, :z, :created_by)")
+    int createClaim(@Bind("group_id") int group_id, @Bind("x") int chunkX, @Bind("y") int chunkY, @Bind("z") int chunkZ, @Bind("created_by") int createdById) throws SQLException;
     
-    default Result<Claim> makeClaim(int groupId, int x, int y, int claimedById) {
+    default Result<Claim> makeClaim(int groupId, int x, int y, int z, int claimedById) {
         try {
-            int claimId = createClaim(groupId, x, y, claimedById);
+            int claimId = createClaim(groupId, x, y, z, claimedById);
             Optional<Claim> claim = findClaim(claimId);
             if (claim.isPresent()) {
                 return Result.success(claim.get());

@@ -35,14 +35,14 @@ public class ClaimsDAOTests {
         User user = UsersDAOTests.makeTestUser(usersDAO, UUID.randomUUID(), "ClaimUser");
         Group group = GroupsDAOTests.makeTestGroup(groupsDao, "ClaimGroup", user.id());
 
-        makeTestClaim(dao, group.id(), 0, 0, user.id());
+        makeTestClaim(dao, group.id(), 0, 0, 0, user.id());
     }
 
-    public static Claim makeTestClaim(ClaimsDAO dao, int groupId, int x, int y, int claimedById) throws AssertionError {
-        Result<Claim> claimResult = dao.makeClaim(groupId, x, y, claimedById);
+    public static Claim makeTestClaim(ClaimsDAO dao, int groupId, int x, int y, int z, int claimedById) throws AssertionError {
+        Result<Claim> claimResult = dao.makeClaim(groupId, x, y, z, claimedById);
 
         if (claimResult instanceof Result.Success<Claim>(Claim result)) {
-            assertClaimMatches(result, groupId, x, y, claimedById);
+            assertClaimMatches(result, groupId, x, y, z, claimedById);
             return result;
         }
 
@@ -50,10 +50,11 @@ public class ClaimsDAOTests {
         throw new AssertionError("Failed making new claim.", cause.orElse(null));
     }
 
-    private static void assertClaimMatches(Claim claim, int expectedGroup, int expectedX, int expectedY, int expectedCreator) {
+    private static void assertClaimMatches(Claim claim, int expectedGroup, int expectedX, int expectedY, int expectedZ, int expectedCreator) {
         assertEquals(expectedGroup, claim.groupId());
         assertEquals(expectedX, claim.chunkX());
         assertEquals(expectedY, claim.chunkY());
+        assertEquals(expectedZ, claim.chunkZ());
         assertEquals(expectedCreator, claim.createdById());
     }
 
