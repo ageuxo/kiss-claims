@@ -48,7 +48,7 @@ public interface ClaimsDAO {
         try {
             return Result.success(deleteClaim(id));
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return Result.error(e);
         }
     }
 
