@@ -4,13 +4,16 @@ CREATE TABLE `claims` (
   `modified_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `created_by` int(11) NOT NULL,
   `group_id` int(11) NOT NULL,
+  `level` int(11) NOT NULL,
   `x` int(11) NOT NULL,
   `z` int(11) NOT NULL,
   `y` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_claims_pos` (`x`,`y`,`z`),
+  UNIQUE KEY `uq_claims_pos` (`level`,`x`,`y`,`z`),
   KEY `fk_claims_created_by` (`created_by`),
   KEY `fk_claims_group` (`group_id`),
+  KEY `fk_claims_level` (`level`),
   CONSTRAINT `fk_claims_created_by` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_claims_group` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE
+  CONSTRAINT `fk_claims_group` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_claims_level` FOREIGN KEY (`level`) REFERENCES `levels` (`id`) ON DELETE CASCADE
 )
