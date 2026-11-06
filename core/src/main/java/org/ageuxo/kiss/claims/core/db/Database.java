@@ -4,6 +4,7 @@ import org.ageuxo.kiss.claims.core.config.CoreConfig;
 import org.ageuxo.kiss.claims.core.db.exception.IntegrityExceptionHandler;
 import org.ageuxo.kiss.claims.core.db.mapper.ClaimMapper;
 import org.ageuxo.kiss.claims.core.db.mapper.GroupMapper;
+import org.ageuxo.kiss.claims.core.db.mapper.LevelMapper;
 import org.ageuxo.kiss.claims.core.db.mapper.UserMapper;
 import org.jdbi.v3.core.HandleCallback;
 import org.jdbi.v3.core.HandleConsumer;
@@ -28,6 +29,7 @@ public class Database {
                 .registerRowMapper(new UserMapper())
                 .registerRowMapper(new GroupMapper())
                 .registerRowMapper(new ClaimMapper())
+                .registerRowMapper(new LevelMapper())
                 .setSqlLogger(new Slf4JSqlLogger());
 
         this.jdbi.getConfig(SqlStatements.class)
